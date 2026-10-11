@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title th:text="${pageTitle}">Product Form</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/style.css}" href="/css/style.css">
+</head>
+<body>
+<nav class="navbar navbar-dark bg-primary">
+    <div class="container"><a class="navbar-brand fw-semibold" th:href="@{/}">Stock Management</a></div>
+</nav>
+
+<main class="container py-5">
+    <div class="card border-0 shadow-sm mx-auto product-form-card">
+        <div class="card-body p-4 p-md-5">
+            <h1 class="h3 mb-4" th:text="${pageTitle}">Product Form</h1>
+            <div class="alert alert-warning" th:if="${#lists.isEmpty(categories)}">
+                Add a category before creating a product.
+            </div>
+            <form th:object="${product}"
+                  th:action="${product.id == null} ? @{/products} : @{/products/update/{id}(id=${product.id})}"
+                  method="post" novalidate>
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <label class="form-label" for="productCode">Product Code</label>
+                        <input class="form-control" th:classappend="${#fields.hasErrors('productCode')} ? 'is-invalid'"
+                               id="productCode" type="text" th:field="*{productCode}" maxlength="50" required autofocus>
+                        <div class="invalid-feedback" th:errors="*{productCode}"></div>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label" for="name">Product Name</label>
+                        <input class="form-control" th:classappend="${#fields.hasErrors('name')} ? 'is-invalid'"
+                               id="name" type="text" th:field="*{name}" maxlength="150" required>
+                        <div class="invalid-feedback" th:errors="*{name}"></div>
+                    </div>
+                    <div class="col-12">
+                        <label class="form-label" for="description">Description</label>
+                        <textarea class="form-control" th:classappend="${#fields.hasErrors('description')} ? 'is-invalid'"
+                                  id="description" th:field="*{description}" maxlength="500" rows="3"></textarea>
+                        <div class="invalid-feedback" th:errors="*{description}"></div>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label" for="category">Category</label>
+                        <select class="form-select" th:classappend="${#fields.hasErrors('category')} ? 'is-invalid'"
+                                id="category" th:field="*{category}" required>
+                            <option value="">Select a category</option>
+                            <option th:each="categoryOption : ${categories}" th:value="${categoryOption.id}"
+                                    th:text="${categoryOption.name}"></option>
+                        </select>
+                        <div class="invalid-feedback" th:errors="*{category}"></div>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label" for="status">Status</label>
+                        <select class="form-select" th:classappend="${#fields.hasErrors('status')} ? 'is-invalid'"
+                                id="status" th:field="*{status}" required>
+                            <option th:each="statusOption : ${statuses}" th:value="${statusOption}"
+                                    th:text="${statusOption}"></option>
+                        </select>
+                        <div class="invalid-feedback" th:errors="*{status}"></div>
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label" for="quantity">Quantity</label>
+                        <input class="form-control" th:classappend="${#fields.hasErrors('quantity')} ? 'is-invalid'"
+                               id="quantity" type="number" min="0" th:field="*{quantity}" required>
+                        <div class="invalid-feedback" th:errors="*{quantity}"></div>
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label" for="reorderLevel">Reorder Level</label>
+                        <input class="form-control" th:classappend="${#fields.hasErrors('reorderLevel')} ? 'is-invalid'"
+                               id="reorderLevel" type="number" min="0" th:field="*{reorderLevel}" required>
+                        <div class="invalid-feedback" th:errors="*{reorderLevel}"></div>
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label" for="unitPrice">Unit Price</label>
+                        <input class="form-control" th:classappend="${#fields.hasErrors('unitPrice')} ? 'is-invalid'"
+                               id="unitPrice" type="number" min="0" step="0.01" th:field="*{unitPrice}" required>
+                        <div class="invalid-feedback" th:errors="*{unitPrice}"></div>
+                    </div>
+                </div>
+                <div class="d-flex gap-2 mt-4">
+                    <button class="btn btn-primary" type="submit" th:disabled="${#lists.isEmpty(categories)}">Save</button>
+                    <a class="btn btn-outline-secondary" th:href="@{/products}">Cancel</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</main>
+</body>
+</html>

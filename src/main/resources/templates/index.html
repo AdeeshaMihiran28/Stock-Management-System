@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Web-Based Stock Management System</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/style.css}" href="/css/style.css">
+</head>
+<body>
+<header class="hero py-5 text-white">
+    <div class="container py-4">
+        <span class="badge rounded-pill text-bg-light text-primary mb-3">SE2030</span>
+        <h1 class="display-5 fw-bold">Web-Based Stock Management System</h1>
+        <p class="lead mb-0">SE2030 Software Engineering Project</p>
+    </div>
+</header>
+
+<main class="container py-5">
+    <div class="mb-4">
+        <h2 class="h3 fw-semibold">System Modules</h2>
+        <p class="text-secondary">Manage products and categories from the available module.</p>
+    </div>
+
+    <div class="row g-4">
+        <div class="col-md-6 col-lg-4">
+            <section class="card module-card h-100 border-0 shadow-sm">
+                <div class="card-body p-4">
+                    <span class="module-number">01 · AVAILABLE</span>
+                    <h3 class="h5 mt-3">Product &amp; Category Management</h3>
+                    <p class="text-secondary">Organize products and their categories.</p>
+                    <div class="d-flex flex-wrap gap-2">
+                        <a class="btn btn-primary btn-sm" th:href="@{/products}">Products</a>
+                        <a class="btn btn-outline-primary btn-sm" th:href="@{/categories}">Categories</a>
+                    </div>
+                </div>
+            </section>
+        </div>
+        <div class="col-md-6 col-lg-4">
+            <section class="card module-card h-100 border-0 shadow-sm">
+                <div class="card-body p-4"><span class="module-number">02 · COMING SOON</span><h3 class="h5 mt-3">Supplier Management</h3><p class="text-secondary mb-0">Maintain supplier information.</p></div>
+            </section>
+        </div>
+        <div class="col-md-6 col-lg-4">
+            <section class="card module-card h-100 border-0 shadow-sm">
+                <div class="card-body p-4"><span class="module-number">03 · COMING SOON</span><h3 class="h5 mt-3">Stock-In Management</h3><p class="text-secondary mb-0">Record incoming inventory.</p></div>
+            </section>
+        </div>
+        <div class="col-md-6 col-lg-4">
+            <section class="card module-card h-100 border-0 shadow-sm">
+                <div class="card-body p-4"><span class="module-number">04 · COMING SOON</span><h3 class="h5 mt-3">Stock-Out Management</h3><p class="text-secondary mb-0">Track outgoing inventory.</p></div>
+            </section>
+        </div>
+        <div class="col-md-6 col-lg-4">
+            <section class="card module-card h-100 border-0 shadow-sm">
+                <div class="card-body p-4"><span class="module-number">05 · COMING SOON</span><h3 class="h5 mt-3">Low Stock Alerts</h3><p class="text-secondary mb-0">Highlight items that need attention.</p></div>
+            </section>
+        </div>
+        <div class="col-md-6 col-lg-4">
+            <section class="card module-card h-100 border-0 shadow-sm">
+                <div class="card-body p-4"><span class="module-number">06 · COMING SOON</span><h3 class="h5 mt-3">Reports &amp; Dashboard</h3><p class="text-secondary mb-0">Summarize inventory activity.</p></div>
+            </section>
+        </div>
+    </div>
+</main>
+
+<footer class="container pb-4 text-center text-secondary small">
+    Stock Management System
+</footer>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

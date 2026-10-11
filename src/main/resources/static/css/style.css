@@ -1,0 +1,43 @@
+:root {
+    --brand: #1d4ed8;
+}
+
+body {
+    background: #f8fafc;
+    color: #172033;
+}
+
+.hero {
+    background: linear-gradient(135deg, #172554, var(--brand));
+}
+
+.module-card {
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.module-card:hover {
+    transform: translateY(-4px);
+}
+
+.module-number {
+    color: var(--brand);
+    font-size: 0.8rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+}
+
+.form-card {
+    max-width: 720px;
+}
+
+.product-form-card {
+    max-width: 960px;
+}
+
+.page-container {
+    max-width: 1440px;
+}
+
+textarea {
+    resize: vertical;
+}

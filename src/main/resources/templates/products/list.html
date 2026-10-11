@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Product Management</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/style.css}" href="/css/style.css">
+</head>
+<body>
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+    <div class="container">
+        <a class="navbar-brand fw-semibold" th:href="@{/}">Stock Management</a>
+        <div class="navbar-nav flex-row gap-3">
+            <a class="nav-link" th:href="@{/categories}">Categories</a>
+            <a class="nav-link active" th:href="@{/products}">Products</a>
+        </div>
+    </div>
+</nav>
+
+<main class="container-fluid page-container py-5">
+    <div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-4">
+        <div>
+            <h1 class="h2 mb-1">Product Management</h1>
+            <p class="text-secondary mb-0">Maintain product details and current quantities.</p>
+        </div>
+        <a class="btn btn-primary" th:href="@{/products/new}">Add Product</a>
+    </div>
+
+    <div class="alert alert-success alert-dismissible fade show" role="alert" th:if="${successMessage}">
+        <span th:text="${successMessage}"></span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+
+    <form class="row g-2 mb-4" method="get" th:action="@{/products}">
+        <div class="col-sm-8 col-md-5">
+            <label class="visually-hidden" for="keyword">Search products</label>
+            <input class="form-control" id="keyword" name="keyword" th:value="${keyword}"
+                   placeholder="Search by product name or code">
+        </div>
+        <div class="col-auto"><button class="btn btn-primary" type="submit">Search</button></div>
+        <div class="col-auto"><a class="btn btn-outline-secondary" th:href="@{/products}">Clear</a></div>
+    </form>
+
+    <div class="card border-0 shadow-sm">
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+                <thead class="table-light">
+                <tr>
+                    <th>Product Code</th>
+                    <th>Product Name</th>
+                    <th>Category</th>
+                    <th>Quantity</th>
+                    <th>Reorder Level</th>
+                    <th>Unit Price</th>
+                    <th>Status</th>
+                    <th class="text-end">Actions</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="product : ${products}">
+                    <td class="fw-semibold" th:text="${product.productCode}"></td>
+                    <td th:text="${product.name}"></td>
+                    <td th:text="${product.category.name}"></td>
+                    <td>
+                        <span th:classappend="${product.quantity <= product.reorderLevel} ? 'text-danger fw-bold'"
+                              th:text="${product.quantity}"></span>
+                        <span class="badge text-bg-danger ms-1"
+                              th:if="${product.quantity <= product.reorderLevel}">Low stock</span>
+                    </td>
+                    <td th:text="${product.reorderLevel}"></td>
+                    <td th:text="${#numbers.formatDecimal(product.unitPrice, 1, 2)}"></td>
+                    <td><span class="badge" th:classappend="${product.status.name() == 'ACTIVE'} ? 'text-bg-success' : 'text-bg-secondary'" th:text="${product.status}"></span></td>
+                    <td class="text-end text-nowrap">
+                        <a class="btn btn-sm btn-outline-primary"
+                           th:href="@{/products/edit/{id}(id=${product.id})}">Edit</a>
+                        <a class="btn btn-sm btn-outline-danger"
+                           th:href="@{/products/delete/{id}(id=${product.id})}"
+                           onclick="return confirm('Delete this product?')">Delete</a>
+                    </td>
+                </tr>
+                <tr th:if="${#lists.isEmpty(products)}">
+                    <td colspan="8" class="text-center text-secondary py-5">No products found.</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</main>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

@@ -1,0 +1,13 @@
+target/
+.vscode/
+.idea/
+*.log
+.env
+application-local.properties
+
+### Java ###
+*.class
+
+### Operating systems ###
+.DS_Store
+Thumbs.db
