@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Add Stock-Out</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/style.css}" href="/css/style.css">
+</head>
+<body>
+<nav class="navbar navbar-dark bg-primary">
+    <div class="container"><a class="navbar-brand fw-semibold" th:href="@{/}">Stock Management</a></div>
+</nav>
+
+<main class="container py-5">
+    <div class="card border-0 shadow-sm mx-auto product-form-card">
+        <div class="card-body p-4 p-md-5">
+            <h1 class="h3 mb-4">Add Stock-Out</h1>
+            <div class="alert alert-warning" th:if="${#lists.isEmpty(products)}">
+                At least one active product is required.
+            </div>
+            <form th:object="${stockOutForm}" th:action="@{/stock-out}" method="post" novalidate>
+                <div class="alert alert-danger" th:if="${#fields.hasGlobalErrors()}"
+                     th:each="error : ${#fields.globalErrors()}" th:text="${error}"></div>
+                <div class="row g-3">
+                    <div class="col-12">
+                        <label class="form-label" for="productId">Product</label>
+                        <select class="form-select" th:classappend="${#fields.hasErrors('productId')} ? 'is-invalid'"
+                                id="productId" th:field="*{productId}" required>
+                            <option value="">Select a product</option>
+                            <option th:each="product : ${products}" th:value="${product.id}"
+                                    th:text="${product.productCode + ' - ' + product.name + ' (Available: ' + product.quantity + ')'}"></option>
+                        </select>
+                        <div class="invalid-feedback" th:errors="*{productId}"></div>
+                        <div class="form-text">Available quantity is shown beside each product.</div>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label" for="quantity">Quantity</label>
+                        <input class="form-control" th:classappend="${#fields.hasErrors('quantity')} ? 'is-invalid'"
+                               id="quantity" type="number" min="1" th:field="*{quantity}" required>
+                        <div class="invalid-feedback" th:errors="*{quantity}"></div>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label" for="transactionDate">Transaction Date</label>
+                        <input class="form-control" th:classappend="${#fields.hasErrors('transactionDate')} ? 'is-invalid'"
+                               id="transactionDate" type="datetime-local" th:field="*{transactionDate}" required>
+                        <div class="invalid-feedback" th:errors="*{transactionDate}"></div>
+                    </div>
+                    <div class="col-12">
+                        <label class="form-label" for="referenceNumber">Reference Number</label>
+                        <input class="form-control" th:classappend="${#fields.hasErrors('referenceNumber')} ? 'is-invalid'"
+                               id="referenceNumber" type="text" th:field="*{referenceNumber}" maxlength="100">
+                        <div class="invalid-feedback" th:errors="*{referenceNumber}"></div>
+                    </div>
+                    <div class="col-12">
+                        <label class="form-label" for="notes">Notes</label>
+                        <textarea class="form-control" th:classappend="${#fields.hasErrors('notes')} ? 'is-invalid'"
+                                  id="notes" th:field="*{notes}" maxlength="500" rows="3"></textarea>
+                        <div class="invalid-feedback" th:errors="*{notes}"></div>
+                    </div>
+                </div>
+                <div class="d-flex gap-2 mt-4">
+                    <button class="btn btn-primary" type="submit" th:disabled="${#lists.isEmpty(products)}">Save Stock-Out</button>
+                    <a class="btn btn-outline-secondary" th:href="@{/stock-out}">Cancel</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</main>
+</body>
+</html>
