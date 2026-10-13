@@ -1,0 +1,19 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Stock Movement Report</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet"><link rel="stylesheet" th:href="@{/css/style.css}" href="/css/style.css">
+</head>
+<body>
+<div th:replace="~{fragments/navigation :: navigation('reports')}"></div>
+<main class="container-fluid page-container py-5">
+    <h1 class="h2 mb-4">Stock Movement Report</h1>
+    <form class="row g-2 mb-4" method="get" th:action="@{/reports/movements}"><div class="col-auto"><label class="form-label" for="fromDate">From</label><input class="form-control" id="fromDate" name="fromDate" type="date" th:value="${fromDate}"></div><div class="col-auto"><label class="form-label" for="toDate">To</label><input class="form-control" id="toDate" name="toDate" type="date" th:value="${toDate}"></div><div class="col-auto align-self-end"><button class="btn btn-primary" type="submit">Filter</button> <a class="btn btn-outline-secondary" th:href="@{/reports/movements}">Clear</a></div></form>
+    <div class="alert alert-danger" th:if="${errorMessage}" th:text="${errorMessage}"></div>
+    <div class="card border-0 shadow-sm"><div class="table-responsive"><table class="table table-hover align-middle mb-0"><thead class="table-light"><tr><th>Date</th><th>Type</th><th>Product Code</th><th>Product Name</th><th>Quantity</th><th>Supplier</th><th>Reference Number</th></tr></thead><tbody>
+        <tr th:each="transaction : ${transactions}"><td th:text="${#temporals.format(transaction.transactionDate, 'yyyy-MM-dd HH:mm')}"></td><td><span class="badge" th:classappend="${transaction.transactionType.name() == 'IN'} ? 'text-bg-success' : 'text-bg-danger'" th:text="${transaction.transactionType}"></span></td><td th:text="${transaction.product.productCode}"></td><td th:text="${transaction.product.name}"></td><td th:text="${transaction.quantity}"></td><td th:text="${transaction.supplier == null ? '-' : transaction.supplier.supplierCode + ' - ' + transaction.supplier.name}"></td><td th:text="${#strings.isEmpty(transaction.referenceNumber) ? '-' : transaction.referenceNumber}"></td></tr>
+        <tr th:if="${#lists.isEmpty(transactions)}"><td colspan="7" class="text-center text-secondary py-5">No stock movements found.</td></tr>
+    </tbody></table></div></div>
+</main>
+</body>
+</html>

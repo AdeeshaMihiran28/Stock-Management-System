@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<body>
+<nav th:fragment="navigation(activePage)" class="navbar navbar-expand-xl navbar-dark app-navbar sticky-top">
+    <div class="container-fluid px-4">
+        <a class="navbar-brand fw-semibold d-flex align-items-center gap-2" th:href="@{/}"><span class="brand-mark brand-mark-sm" aria-hidden="true">S</span><span>Stock Management</span></a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNavigation"
+                aria-controls="mainNavigation" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="mainNavigation">
+            <div class="navbar-nav me-auto">
+                <a class="nav-link" th:classappend="${activePage == 'dashboard'} ? ' active'" th:href="@{/}">Dashboard</a>
+                <a class="nav-link" sec:authorize="hasAnyRole('ADMIN','INVENTORY_MANAGER')"
+                   th:classappend="${activePage == 'categories'} ? ' active'" th:href="@{/categories}">Categories</a>
+                <a class="nav-link" th:classappend="${activePage == 'products'} ? ' active'" th:href="@{/products}">Products</a>
+                <a class="nav-link" sec:authorize="hasAnyRole('ADMIN','INVENTORY_MANAGER','PURCHASING_OFFICER')"
+                   th:classappend="${activePage == 'suppliers'} ? ' active'" th:href="@{/suppliers}">Suppliers</a>
+                <a class="nav-link" sec:authorize="hasAnyRole('ADMIN','INVENTORY_MANAGER','STOCK_CLERK','PURCHASING_OFFICER')"
+                   th:classappend="${activePage == 'stock-in'} ? ' active'" th:href="@{/stock-in}">Stock-In</a>
+                <a class="nav-link" sec:authorize="hasAnyRole('ADMIN','INVENTORY_MANAGER','STOCK_CLERK')"
+                   th:classappend="${activePage == 'stock-out'} ? ' active'" th:href="@{/stock-out}">Stock-Out</a>
+                <a class="nav-link" th:classappend="${activePage == 'low-stock'} ? ' active'" th:href="@{/low-stock}">Low Stock</a>
+                <a class="nav-link" sec:authorize="hasAnyRole('ADMIN','INVENTORY_MANAGER','PURCHASING_OFFICER','MANAGEMENT')"
+                   th:classappend="${activePage == 'reports'} ? ' active'" th:href="@{/reports}">Reports</a>
+                <a class="nav-link" sec:authorize="hasRole('ADMIN')"
+                   th:classappend="${activePage == 'users'} ? ' active'" th:href="@{/users}">Users</a>
+            </div>
+            <div class="user-menu d-flex align-items-center gap-3 text-white py-2">
+                <div class="small lh-sm text-xl-end">
+                    <div class="fw-semibold" sec:authentication="name">user</div>
+                    <div class="user-role" th:text="${#strings.replace(#authentication.principal.authorities[0].authority, 'ROLE_', '')}">ROLE</div>
+                </div>
+                <form method="post" th:action="@{/logout}">
+                    <button class="btn btn-light btn-sm px-3" type="submit">Logout</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</nav>
+</body>
+</html>

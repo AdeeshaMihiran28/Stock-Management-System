@@ -1,0 +1,15 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>User Management</title><link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet"><link rel="stylesheet" th:href="@{/css/style.css}" href="/css/style.css"></head>
+<body>
+<div th:replace="~{fragments/navigation :: navigation('users')}"></div>
+<main class="container-fluid page-container py-5">
+    <div class="d-flex justify-content-between align-items-center mb-4"><div><h1 class="h2 mb-1">User Management</h1><p class="text-secondary mb-0">Create users, assign roles, and control account access.</p></div><a class="btn btn-primary" th:href="@{/users/new}">Add User</a></div>
+    <div class="alert alert-success" th:if="${successMessage}" th:text="${successMessage}"></div><div class="alert alert-danger" th:if="${errorMessage}" th:text="${errorMessage}"></div>
+    <div class="card border-0 shadow-sm"><div class="table-responsive"><table class="table table-hover align-middle mb-0">
+        <thead class="table-light"><tr><th>Username</th><th>Full Name</th><th>Email</th><th>Role</th><th>Status</th><th>Actions</th></tr></thead>
+        <tbody><tr th:each="user : ${users}"><td th:text="${user.username}"></td><td th:text="${user.fullName}"></td><td th:text="${#strings.isEmpty(user.email) ? '-' : user.email}"></td><td th:text="${user.role}"></td><td><span class="badge" th:classappend="${user.active} ? 'text-bg-success' : 'text-bg-secondary'" th:text="${user.active ? 'Active' : 'Inactive'}"></span></td><td><div class="d-flex flex-wrap gap-2"><a class="btn btn-sm btn-outline-primary" th:href="@{/users/edit/{id}(id=${user.id})}">Edit</a><a class="btn btn-sm btn-outline-secondary" th:href="@{/users/password/{id}(id=${user.id})}">Reset Password</a><form method="post" th:action="@{/users/toggle-status/{id}(id=${user.id})}" onsubmit="return confirm('Change this user status?')"><button class="btn btn-sm" th:classappend="${user.active} ? 'btn-outline-danger' : 'btn-outline-success'" type="submit" th:text="${user.active ? 'Deactivate' : 'Activate'}"></button></form></div></td></tr>
+        <tr th:if="${#lists.isEmpty(users)}"><td colspan="6" class="text-center text-secondary py-4">No users found.</td></tr></tbody>
+    </table></div></div>
+</main><script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script></body>
+</html>
