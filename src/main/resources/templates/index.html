@@ -1,72 +1,52 @@
 <!doctype html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Web-Based Stock Management System</title>
+    <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Dashboard | Stock Management</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" th:href="@{/css/style.css}" href="/css/style.css">
 </head>
 <body>
-<header class="hero py-5 text-white">
-    <div class="container py-4">
-        <span class="badge rounded-pill text-bg-light text-primary mb-3">SE2030</span>
-        <h1 class="display-5 fw-bold">Web-Based Stock Management System</h1>
-        <p class="lead mb-0">SE2030 Software Engineering Project</p>
-    </div>
+<div th:replace="~{fragments/navigation :: navigation('dashboard')}"></div>
+<header class="dashboard-hero text-white">
+    <div class="container py-5"><div class="row align-items-center g-4">
+        <div class="col-lg-8"><h1 class="display-5 fw-bold mb-2">Inventory Dashboard</h1><p class="lead text-white-50 mb-0">A clear view of stock levels, movement and daily operations.</p></div>
+        <div class="col-lg-4 text-lg-end" sec:authorize="hasAnyRole('ADMIN','INVENTORY_MANAGER','PURCHASING_OFFICER','MANAGEMENT')"><a class="btn btn-light btn-lg px-4" th:href="@{/reports}">View reports</a></div>
+    </div></div>
 </header>
-
-<main class="container py-5">
-    <div class="mb-4">
-        <h2 class="h3 fw-semibold">System Modules</h2>
-        <p class="text-secondary">Manage products and categories from the available module.</p>
-    </div>
-
-    <div class="row g-4">
-        <div class="col-md-6 col-lg-4">
-            <section class="card module-card h-100 border-0 shadow-sm">
-                <div class="card-body p-4">
-                    <span class="module-number">01 · AVAILABLE</span>
-                    <h3 class="h5 mt-3">Product &amp; Category Management</h3>
-                    <p class="text-secondary">Organize products and their categories.</p>
-                    <div class="d-flex flex-wrap gap-2">
-                        <a class="btn btn-primary btn-sm" th:href="@{/products}">Products</a>
-                        <a class="btn btn-outline-primary btn-sm" th:href="@{/categories}">Categories</a>
-                    </div>
-                </div>
-            </section>
+<main class="container dashboard-content py-5">
+    <section class="mb-5" aria-labelledby="overview-title">
+        <div class="section-heading mb-4"><div><span class="eyebrow">LIVE OVERVIEW</span><h2 class="h3 fw-bold mt-1 mb-1" id="overview-title">Inventory at a glance</h2><p class="text-secondary mb-0">Current totals from your database.</p></div></div>
+        <div class="row g-3">
+            <div class="col-6 col-lg-2"><div class="stat-card h-100"><span class="stat-label">Products</span><strong class="stat-value" th:text="${totalProducts}">0</strong><span class="stat-dot bg-primary"></span></div></div>
+            <div class="col-6 col-lg-2"><div class="stat-card h-100"><span class="stat-label">Categories</span><strong class="stat-value" th:text="${totalCategories}">0</strong><span class="stat-dot bg-info"></span></div></div>
+            <div class="col-6 col-lg-2"><div class="stat-card h-100"><span class="stat-label">Suppliers</span><strong class="stat-value" th:text="${totalSuppliers}">0</strong><span class="stat-dot bg-success"></span></div></div>
+            <div class="col-6 col-lg-2"><div class="stat-card h-100"><span class="stat-label">Units in stock</span><strong class="stat-value" th:text="${totalStockQuantity}">0</strong><span class="stat-dot bg-secondary"></span></div></div>
+            <div class="col-6 col-lg-2"><div class="stat-card h-100"><span class="stat-label">Low stock</span><strong class="stat-value text-warning" th:text="${lowStockCount}">0</strong><span class="stat-dot bg-warning"></span></div></div>
+            <div class="col-6 col-lg-2"><div class="stat-card h-100"><span class="stat-label">Out of stock</span><strong class="stat-value text-danger" th:text="${outOfStockCount}">0</strong><span class="stat-dot bg-danger"></span></div></div>
         </div>
-        <div class="col-md-6 col-lg-4">
-            <section class="card module-card h-100 border-0 shadow-sm">
-                <div class="card-body p-4"><span class="module-number">02 · COMING SOON</span><h3 class="h5 mt-3">Supplier Management</h3><p class="text-secondary mb-0">Maintain supplier information.</p></div>
-            </section>
+    </section>
+    <section class="mb-5" aria-labelledby="movements-title">
+        <div class="section-heading mb-3"><div><span class="eyebrow">LATEST ACTIVITY</span><h2 class="h3 fw-bold mt-1 mb-0" id="movements-title">Recent stock movements</h2></div></div>
+        <div class="card data-card border-0"><div class="table-responsive"><table class="table table-hover align-middle mb-0">
+            <thead><tr><th>Date</th><th>Type</th><th>Product</th><th>Quantity</th><th>Reference</th></tr></thead>
+            <tbody><tr th:each="transaction : ${recentTransactions}"><td class="text-secondary" th:text="${#temporals.format(transaction.transactionDate, 'yyyy-MM-dd HH:mm')}"></td><td><span class="badge rounded-pill" th:classappend="${transaction.transactionType.name() == 'IN'} ? 'text-bg-success' : 'text-bg-danger'" th:text="${transaction.transactionType}"></span></td><td class="fw-semibold" th:text="${transaction.product.productCode + ' - ' + transaction.product.name}"></td><td th:text="${transaction.quantity}"></td><td th:text="${#strings.isEmpty(transaction.referenceNumber) ? '-' : transaction.referenceNumber}"></td></tr>
+            <tr th:if="${#lists.isEmpty(recentTransactions)}"><td colspan="5" class="text-center text-secondary py-5">No stock movements found.</td></tr></tbody>
+        </table></div></div>
+    </section>
+    <section aria-labelledby="modules-title">
+        <div class="section-heading mb-4"><div><span class="eyebrow">QUICK ACCESS</span><h2 class="h3 fw-bold mt-1 mb-1" id="modules-title">System modules</h2><p class="text-secondary mb-0">Choose an area to continue.</p></div></div>
+        <div class="row g-4">
+            <div class="col-md-6 col-lg-4"><article class="module-card h-100"><span class="module-icon">01</span><h3 class="h5 fw-bold">Products &amp; Categories</h3><p class="text-secondary">Organize products, pricing and category information.</p><div class="d-flex flex-wrap gap-2 mt-auto"><a class="btn btn-primary btn-sm" th:href="@{/products}">Products</a><a class="btn btn-outline-primary btn-sm" sec:authorize="hasAnyRole('ADMIN','INVENTORY_MANAGER')" th:href="@{/categories}">Categories</a></div></article></div>
+            <div class="col-md-6 col-lg-4" sec:authorize="hasAnyRole('ADMIN','INVENTORY_MANAGER','PURCHASING_OFFICER')"><article class="module-card h-100"><span class="module-icon">02</span><h3 class="h5 fw-bold">Supplier Management</h3><p class="text-secondary">Maintain supplier contacts and availability.</p><a class="btn btn-primary btn-sm mt-auto align-self-start" th:href="@{/suppliers}">Open suppliers</a></article></div>
+            <div class="col-md-6 col-lg-4" sec:authorize="hasAnyRole('ADMIN','INVENTORY_MANAGER','STOCK_CLERK','PURCHASING_OFFICER')"><article class="module-card h-100"><span class="module-icon">03</span><h3 class="h5 fw-bold">Stock-In</h3><p class="text-secondary">Record incoming inventory and supplier deliveries.</p><a class="btn btn-primary btn-sm mt-auto align-self-start" th:href="@{/stock-in}">Record stock-in</a></article></div>
+            <div class="col-md-6 col-lg-4" sec:authorize="hasAnyRole('ADMIN','INVENTORY_MANAGER','STOCK_CLERK')"><article class="module-card h-100"><span class="module-icon">04</span><h3 class="h5 fw-bold">Stock-Out</h3><p class="text-secondary">Track outgoing stock without allowing negative balances.</p><a class="btn btn-primary btn-sm mt-auto align-self-start" th:href="@{/stock-out}">Record stock-out</a></article></div>
+            <div class="col-md-6 col-lg-4"><article class="module-card h-100"><span class="module-icon module-icon-warning">05</span><h3 class="h5 fw-bold">Low Stock Alerts</h3><p class="text-secondary"><strong class="text-dark" th:text="${lowStockCount}">0</strong> products currently require attention.</p><a class="btn btn-primary btn-sm mt-auto align-self-start" th:href="@{/low-stock}">Review alerts</a></article></div>
+            <div class="col-md-6 col-lg-4" sec:authorize="hasAnyRole('ADMIN','INVENTORY_MANAGER','PURCHASING_OFFICER','MANAGEMENT')"><article class="module-card h-100"><span class="module-icon">06</span><h3 class="h5 fw-bold">Reports</h3><p class="text-secondary">Review current inventory and stock movement history.</p><a class="btn btn-primary btn-sm mt-auto align-self-start" th:href="@{/reports}">Open reports</a></article></div>
         </div>
-        <div class="col-md-6 col-lg-4">
-            <section class="card module-card h-100 border-0 shadow-sm">
-                <div class="card-body p-4"><span class="module-number">03 · COMING SOON</span><h3 class="h5 mt-3">Stock-In Management</h3><p class="text-secondary mb-0">Record incoming inventory.</p></div>
-            </section>
-        </div>
-        <div class="col-md-6 col-lg-4">
-            <section class="card module-card h-100 border-0 shadow-sm">
-                <div class="card-body p-4"><span class="module-number">04 · COMING SOON</span><h3 class="h5 mt-3">Stock-Out Management</h3><p class="text-secondary mb-0">Track outgoing inventory.</p></div>
-            </section>
-        </div>
-        <div class="col-md-6 col-lg-4">
-            <section class="card module-card h-100 border-0 shadow-sm">
-                <div class="card-body p-4"><span class="module-number">05 · COMING SOON</span><h3 class="h5 mt-3">Low Stock Alerts</h3><p class="text-secondary mb-0">Highlight items that need attention.</p></div>
-            </section>
-        </div>
-        <div class="col-md-6 col-lg-4">
-            <section class="card module-card h-100 border-0 shadow-sm">
-                <div class="card-body p-4"><span class="module-number">06 · COMING SOON</span><h3 class="h5 mt-3">Reports &amp; Dashboard</h3><p class="text-secondary mb-0">Summarize inventory activity.</p></div>
-            </section>
-        </div>
-    </div>
+    </section>
 </main>
-
-<footer class="container pb-4 text-center text-secondary small">
-    Stock Management System
-</footer>
+<footer class="container py-4 text-center text-secondary small">SE2030 · Stock Management System</footer>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

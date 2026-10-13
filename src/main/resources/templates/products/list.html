@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -8,15 +8,7 @@
     <link rel="stylesheet" th:href="@{/css/style.css}" href="/css/style.css">
 </head>
 <body>
-<nav class="navbar navbar-expand-lg navbar-dark bg-primary">
-    <div class="container">
-        <a class="navbar-brand fw-semibold" th:href="@{/}">Stock Management</a>
-        <div class="navbar-nav flex-row gap-3">
-            <a class="nav-link" th:href="@{/categories}">Categories</a>
-            <a class="nav-link active" th:href="@{/products}">Products</a>
-        </div>
-    </div>
-</nav>
+<div th:replace="~{fragments/navigation :: navigation('products')}"></div>
 
 <main class="container-fluid page-container py-5">
     <div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-4">
@@ -24,11 +16,15 @@
             <h1 class="h2 mb-1">Product Management</h1>
             <p class="text-secondary mb-0">Maintain product details and current quantities.</p>
         </div>
-        <a class="btn btn-primary" th:href="@{/products/new}">Add Product</a>
+        <a class="btn btn-primary" sec:authorize="hasAnyRole('ADMIN','INVENTORY_MANAGER')" th:href="@{/products/new}">Add Product</a>
     </div>
 
     <div class="alert alert-success alert-dismissible fade show" role="alert" th:if="${successMessage}">
         <span th:text="${successMessage}"></span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+    <div class="alert alert-danger alert-dismissible fade show" role="alert" th:if="${errorMessage}">
+        <span th:text="${errorMessage}"></span>
         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
     </div>
 
@@ -54,7 +50,7 @@
                     <th>Reorder Level</th>
                     <th>Unit Price</th>
                     <th>Status</th>
-                    <th class="text-end">Actions</th>
+                    <th class="text-end" sec:authorize="hasAnyRole('ADMIN','INVENTORY_MANAGER')">Actions</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -65,18 +61,20 @@
                     <td>
                         <span th:classappend="${product.quantity <= product.reorderLevel} ? 'text-danger fw-bold'"
                               th:text="${product.quantity}"></span>
-                        <span class="badge text-bg-danger ms-1"
-                              th:if="${product.quantity <= product.reorderLevel}">Low stock</span>
+                        <span class="badge text-bg-danger ms-1" th:if="${product.quantity == 0}">OUT OF STOCK</span>
+                        <span class="badge text-bg-warning ms-1"
+                              th:if="${product.quantity > 0 and product.quantity <= product.reorderLevel}">LOW STOCK</span>
+                        <span class="badge text-bg-success ms-1"
+                              th:if="${product.quantity > product.reorderLevel}">IN STOCK</span>
                     </td>
                     <td th:text="${product.reorderLevel}"></td>
                     <td th:text="${#numbers.formatDecimal(product.unitPrice, 1, 2)}"></td>
                     <td><span class="badge" th:classappend="${product.status.name() == 'ACTIVE'} ? 'text-bg-success' : 'text-bg-secondary'" th:text="${product.status}"></span></td>
-                    <td class="text-end text-nowrap">
+                    <td class="text-end text-nowrap" sec:authorize="hasAnyRole('ADMIN','INVENTORY_MANAGER')">
                         <a class="btn btn-sm btn-outline-primary"
                            th:href="@{/products/edit/{id}(id=${product.id})}">Edit</a>
-                        <a class="btn btn-sm btn-outline-danger"
-                           th:href="@{/products/delete/{id}(id=${product.id})}"
-                           onclick="return confirm('Delete this product?')">Delete</a>
+                        <form class="d-inline" method="post" th:action="@{/products/delete/{id}(id=${product.id})}"
+                              onsubmit="return confirm('Delete this product?')"><button class="btn btn-sm btn-outline-danger" type="submit">Delete</button></form>
                     </td>
                 </tr>
                 <tr th:if="${#lists.isEmpty(products)}">

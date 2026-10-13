@@ -1,29 +1,278 @@
 :root {
     --brand: #1d4ed8;
+    --brand-dark: #172554;
+    --brand-soft: #eff6ff;
+    --ink: #172033;
+    --muted: #64748b;
+    --surface: #ffffff;
+    --line: #e2e8f0;
 }
 
 body {
     background: #f8fafc;
-    color: #172033;
+    color: var(--ink);
+    font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
 }
 
+.app-navbar {
+    background: rgba(15, 37, 91, 0.97);
+    box-shadow: 0 1px 0 rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(12px);
+    min-height: 68px;
+}
+
+.app-navbar .nav-link {
+    color: rgba(255, 255, 255, 0.68);
+    font-weight: 500;
+    padding-inline: 0.7rem !important;
+}
+
+.app-navbar .nav-link:hover,
+.app-navbar .nav-link.active {
+    color: #fff;
+}
+
+.app-navbar .nav-link.active::after {
+    content: "";
+    display: block;
+    width: 1.25rem;
+    height: 2px;
+    margin: 0.3rem auto -0.3rem;
+    background: #60a5fa;
+    border-radius: 2px;
+}
+
+.brand-lockup {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    font-size: 1.05rem;
+    font-weight: 700;
+}
+
+.brand-mark {
+    display: inline-grid;
+    place-items: center;
+    width: 2.65rem;
+    height: 2.65rem;
+    border-radius: 0.85rem;
+    color: var(--brand);
+    background: #fff;
+    font-weight: 800;
+    box-shadow: 0 8px 22px rgba(0, 0, 0, 0.14);
+}
+
+.brand-mark-sm {
+    width: 2rem;
+    height: 2rem;
+    border-radius: 0.6rem;
+    font-size: 0.9rem;
+}
+
+.user-role {
+    color: rgba(255, 255, 255, 0.62);
+    font-size: 0.7rem;
+    letter-spacing: 0.04em;
+}
+
+.dashboard-hero,
 .hero {
-    background: linear-gradient(135deg, #172554, var(--brand));
+    position: relative;
+    overflow: hidden;
+    background: linear-gradient(125deg, var(--brand-dark), #1e3a8a 55%, #2563eb);
+}
+
+.dashboard-hero::after {
+    content: "";
+    position: absolute;
+    width: 28rem;
+    height: 28rem;
+    right: -10rem;
+    top: -16rem;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.07);
+}
+
+.dashboard-hero .container {
+    position: relative;
+    z-index: 1;
+}
+
+.dashboard-content {
+    max-width: 1320px;
+}
+
+.eyebrow {
+    color: var(--brand);
+    font-size: 0.72rem;
+    font-weight: 800;
+    letter-spacing: 0.12em;
+}
+
+.stat-card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    min-height: 126px;
+    padding: 1.25rem;
+    overflow: hidden;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 1rem;
+    box-shadow: 0 8px 28px rgba(15, 23, 42, 0.05);
+}
+
+.stat-label {
+    color: var(--muted);
+    font-size: 0.82rem;
+    font-weight: 600;
+}
+
+.stat-value {
+    margin-top: auto;
+    font-size: 2rem;
+    line-height: 1;
+}
+
+.stat-dot {
+    position: absolute;
+    width: 3.5rem;
+    height: 3.5rem;
+    right: -1.5rem;
+    bottom: -1.75rem;
+    border-radius: 50%;
+    opacity: 0.18;
+}
+
+.data-card {
+    overflow: hidden;
+    border: 1px solid var(--line) !important;
+    border-radius: 1rem;
+    box-shadow: 0 12px 35px rgba(15, 23, 42, 0.06);
+}
+
+.data-card thead th {
+    padding-block: 1rem;
+    color: #475569;
+    background: #f8fafc;
+    border-bottom-color: var(--line);
+    font-size: 0.78rem;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
 }
 
 .module-card {
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    display: flex;
+    flex-direction: column;
+    padding: 1.5rem;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 1rem;
+    box-shadow: 0 8px 28px rgba(15, 23, 42, 0.05);
+    transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
 }
 
 .module-card:hover {
     transform: translateY(-4px);
+    border-color: #bfdbfe;
+    box-shadow: 0 16px 40px rgba(37, 99, 235, 0.1);
 }
 
-.module-number {
+.module-icon {
+    display: inline-grid;
+    place-items: center;
+    width: 2.75rem;
+    height: 2.75rem;
+    margin-bottom: 1.25rem;
     color: var(--brand);
-    font-size: 0.8rem;
-    font-weight: 700;
-    letter-spacing: 0.08em;
+    background: var(--brand-soft);
+    border-radius: 0.8rem;
+    font-size: 0.82rem;
+    font-weight: 800;
+}
+
+.module-icon-warning {
+    color: #a16207;
+    background: #fef9c3;
+}
+
+.login-page {
+    background:
+        radial-gradient(circle at 15% 15%, rgba(96, 165, 250, 0.2), transparent 28rem),
+        #eef2ff;
+}
+
+.login-shell {
+    max-width: 1050px;
+    min-height: 640px;
+    background: #fff;
+    border: 1px solid rgba(255, 255, 255, 0.7);
+    border-radius: 1.5rem;
+    box-shadow: 0 30px 80px rgba(30, 58, 138, 0.18);
+}
+
+.login-shell > .row {
+    min-height: 640px;
+}
+
+.login-showcase {
+    position: relative;
+    overflow: hidden;
+    background: linear-gradient(145deg, #172554, #1d4ed8);
+}
+
+.login-showcase::before,
+.login-showcase::after {
+    content: "";
+    position: absolute;
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    border-radius: 50%;
+}
+
+.login-showcase::before {
+    width: 28rem;
+    height: 28rem;
+    right: -14rem;
+    top: -8rem;
+}
+
+.login-showcase::after {
+    width: 18rem;
+    height: 18rem;
+    left: -10rem;
+    bottom: -10rem;
+}
+
+.login-showcase > * {
+    position: relative;
+    z-index: 1;
+}
+
+.login-form-panel {
+    max-width: 500px;
+    margin-inline: auto;
+}
+
+.login-form-panel .form-control {
+    padding: 0.8rem 1rem;
+    border-color: #cbd5e1;
+    border-radius: 0.75rem;
+    font-size: 1rem;
+}
+
+.login-form-panel .form-control:focus {
+    border-color: #60a5fa;
+    box-shadow: 0 0 0 0.25rem rgba(37, 99, 235, 0.12);
+}
+
+.btn {
+    border-radius: 0.65rem;
+    font-weight: 600;
+}
+
+.btn-primary {
+    background: var(--brand);
+    border-color: var(--brand);
 }
 
 .form-card {
@@ -40,4 +289,30 @@ body {
 
 textarea {
     resize: vertical;
+}
+
+@media (max-width: 1199.98px) {
+    .app-navbar .nav-link.active::after {
+        display: none;
+    }
+
+    .user-menu {
+        border-top: 1px solid rgba(255, 255, 255, 0.12);
+        margin-top: 0.75rem;
+    }
+}
+
+@media (max-width: 575.98px) {
+    .login-shell,
+    .login-shell > .row {
+        min-height: auto;
+    }
+
+    .login-shell {
+        border-radius: 1rem;
+    }
+
+    .dashboard-hero .display-5 {
+        font-size: 2.2rem;
+    }
 }

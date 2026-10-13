@@ -8,9 +8,7 @@
     <link rel="stylesheet" th:href="@{/css/style.css}" href="/css/style.css">
 </head>
 <body>
-<nav class="navbar navbar-dark bg-primary">
-    <div class="container"><a class="navbar-brand fw-semibold" th:href="@{/}">Stock Management</a></div>
-</nav>
+<div th:replace="~{fragments/navigation :: navigation('products')}"></div>
 
 <main class="container py-5">
     <div class="card border-0 shadow-sm mx-auto product-form-card">
@@ -55,6 +53,7 @@
                         <label class="form-label" for="status">Status</label>
                         <select class="form-select" th:classappend="${#fields.hasErrors('status')} ? 'is-invalid'"
                                 id="status" th:field="*{status}" required>
+                            <option value="">Select a status</option>
                             <option th:each="statusOption : ${statuses}" th:value="${statusOption}"
                                     th:text="${statusOption}"></option>
                         </select>
@@ -62,8 +61,9 @@
                     </div>
                     <div class="col-md-4">
                         <label class="form-label" for="quantity">Quantity</label>
-                        <input class="form-control" th:classappend="${#fields.hasErrors('quantity')} ? 'is-invalid'"
-                               id="quantity" type="number" min="0" th:field="*{quantity}" required>
+                        <input class="form-control" id="quantity" type="number" min="0"
+                               th:field="*{quantity}" readonly>
+                        <div class="form-text">Stock quantity is managed through Stock-In and Stock-Out.</div>
                         <div class="invalid-feedback" th:errors="*{quantity}"></div>
                     </div>
                     <div class="col-md-4">

@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -8,16 +8,7 @@
     <link rel="stylesheet" th:href="@{/css/style.css}" href="/css/style.css">
 </head>
 <body>
-<nav class="navbar navbar-expand-lg navbar-dark bg-primary">
-    <div class="container">
-        <a class="navbar-brand fw-semibold" th:href="@{/}">Stock Management</a>
-        <div class="navbar-nav flex-row gap-3">
-            <a class="nav-link" th:href="@{/categories}">Categories</a>
-            <a class="nav-link" th:href="@{/products}">Products</a>
-            <a class="nav-link active" th:href="@{/suppliers}">Suppliers</a>
-        </div>
-    </div>
-</nav>
+<div th:replace="~{fragments/navigation :: navigation('suppliers')}"></div>
 
 <main class="container-fluid page-container py-5">
     <div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-4">
@@ -25,7 +16,7 @@
             <h1 class="h2 mb-1">Supplier Management</h1>
             <p class="text-secondary mb-0">Maintain supplier contact details and status.</p>
         </div>
-        <a class="btn btn-primary" th:href="@{/suppliers/new}">Add Supplier</a>
+        <a class="btn btn-primary" sec:authorize="hasAnyRole('ADMIN','PURCHASING_OFFICER')" th:href="@{/suppliers/new}">Add Supplier</a>
     </div>
 
     <div class="alert alert-success alert-dismissible fade show" role="alert" th:if="${successMessage}">
@@ -58,7 +49,7 @@
                     <th>Phone</th>
                     <th>Email</th>
                     <th>Status</th>
-                    <th class="text-end">Actions</th>
+                    <th class="text-end" sec:authorize="hasAnyRole('ADMIN','PURCHASING_OFFICER')">Actions</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -69,12 +60,11 @@
                     <td th:text="${supplier.phone}"></td>
                     <td th:text="${#strings.isEmpty(supplier.email) ? '—' : supplier.email}"></td>
                     <td><span class="badge" th:classappend="${supplier.status.name() == 'ACTIVE'} ? 'text-bg-success' : 'text-bg-secondary'" th:text="${supplier.status}"></span></td>
-                    <td class="text-end text-nowrap">
+                    <td class="text-end text-nowrap" sec:authorize="hasAnyRole('ADMIN','PURCHASING_OFFICER')">
                         <a class="btn btn-sm btn-outline-primary"
                            th:href="@{/suppliers/edit/{id}(id=${supplier.id})}">Edit</a>
-                        <a class="btn btn-sm btn-outline-danger"
-                           th:href="@{/suppliers/delete/{id}(id=${supplier.id})}"
-                           onclick="return confirm('Delete this supplier?')">Delete</a>
+                        <form class="d-inline" method="post" th:action="@{/suppliers/delete/{id}(id=${supplier.id})}"
+                              onsubmit="return confirm('Delete this supplier?')"><button class="btn btn-sm btn-outline-danger" type="submit">Delete</button></form>
                     </td>
                 </tr>
                 <tr th:if="${#lists.isEmpty(suppliers)}">
