@@ -65,7 +65,7 @@ public class Product {
     @NotNull(message = "Status is required.")
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 20)
-    private ProductStatus status = ProductStatus.ACTIVE;
+    private ProductStatus status;
 
     public Product() {
     }

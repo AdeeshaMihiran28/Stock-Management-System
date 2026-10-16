@@ -7,12 +7,15 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import com.stockmanagement.stockmanagementsystem.model.Supplier;
+import com.stockmanagement.stockmanagementsystem.model.SupplierStatus;
 
 public interface SupplierRepository extends JpaRepository<Supplier, Long> {
 
     boolean existsBySupplierCodeIgnoreCase(String supplierCode);
 
     boolean existsBySupplierCodeIgnoreCaseAndIdNot(String supplierCode, Long id);
+
+    List<Supplier> findByStatusOrderByNameAsc(SupplierStatus status);
 
     @Query("""
             SELECT supplier FROM Supplier supplier

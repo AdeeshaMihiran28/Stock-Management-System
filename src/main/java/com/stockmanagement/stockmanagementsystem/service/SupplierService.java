@@ -10,6 +10,7 @@ import org.springframework.util.StringUtils;
 
 import com.stockmanagement.stockmanagementsystem.exception.ResourceNotFoundException;
 import com.stockmanagement.stockmanagementsystem.model.Supplier;
+import com.stockmanagement.stockmanagementsystem.model.SupplierStatus;
 import com.stockmanagement.stockmanagementsystem.repository.SupplierRepository;
 
 @Service
@@ -30,6 +31,11 @@ public class SupplierService {
     public Supplier getSupplierById(Long id) {
         return supplierRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Supplier not found with ID: " + id));
+    }
+
+    @Transactional(readOnly = true)
+    public List<Supplier> getActiveSuppliers() {
+        return supplierRepository.findByStatusOrderByNameAsc(SupplierStatus.ACTIVE);
     }
 
     @Transactional
