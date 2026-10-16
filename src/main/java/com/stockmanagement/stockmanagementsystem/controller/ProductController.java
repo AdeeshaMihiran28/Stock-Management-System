@@ -84,10 +84,14 @@ public class ProductController {
         return "redirect:/products";
     }
 
-    @GetMapping("/products/delete/{id}")
+    @PostMapping("/products/delete/{id}")
     public String deleteProduct(@PathVariable Long id, RedirectAttributes redirectAttributes) {
-        productService.deleteProduct(id);
-        redirectAttributes.addFlashAttribute("successMessage", "Product deleted successfully.");
+        try {
+            productService.deleteProduct(id);
+            redirectAttributes.addFlashAttribute("successMessage", "Product deleted successfully.");
+        } catch (IllegalStateException exception) {
+            redirectAttributes.addFlashAttribute("errorMessage", exception.getMessage());
+        }
         return "redirect:/products";
     }
 
