@@ -12,6 +12,7 @@ import jakarta.persistence.UniqueConstraint;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 
 @Entity
@@ -25,6 +26,7 @@ public class Supplier {
 
     @NotBlank(message = "Supplier code is required.")
     @Size(max = 50, message = "Supplier code must not exceed 50 characters.")
+    @Pattern(regexp = "^[A-Za-z0-9._-]+$", message = "Supplier code may contain only letters, numbers, dots, hyphens, and underscores.")
     @Column(name = "supplier_code", nullable = false, length = 50)
     private String supplierCode;
 
@@ -39,6 +41,7 @@ public class Supplier {
 
     @NotBlank(message = "Phone is required.")
     @Size(max = 20, message = "Phone must not exceed 20 characters.")
+    @Pattern(regexp = "^\\+?[0-9][0-9 ()-]{5,18}[0-9]$", message = "Enter a valid phone number with 7 to 20 characters.")
     @Column(nullable = false, length = 20)
     private String phone;
 

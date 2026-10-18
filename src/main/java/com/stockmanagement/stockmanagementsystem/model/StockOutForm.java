@@ -6,11 +6,14 @@ import org.springframework.format.annotation.DateTimeFormat;
 
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.PastOrPresent;
+import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.Size;
 
 public class StockOutForm {
 
     @NotNull(message = "Please select a product.")
+    @Positive(message = "Select a valid product.")
     private Long productId;
 
     @NotNull(message = "Quantity is required.")
@@ -18,6 +21,7 @@ public class StockOutForm {
     private Integer quantity;
 
     @NotNull(message = "Transaction date is required.")
+    @PastOrPresent(message = "Transaction date cannot be in the future.")
     @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm")
     private LocalDateTime transactionDate;
 

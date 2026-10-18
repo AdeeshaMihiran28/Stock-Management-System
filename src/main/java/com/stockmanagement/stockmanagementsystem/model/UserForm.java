@@ -3,6 +3,7 @@ package com.stockmanagement.stockmanagementsystem.model;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 
 public class UserForm {
@@ -10,7 +11,8 @@ public class UserForm {
     private Long id;
 
     @NotBlank(message = "Username is required.")
-    @Size(max = 50, message = "Username must not exceed 50 characters.")
+    @Size(min = 3, max = 50, message = "Username must contain between 3 and 50 characters.")
+    @Pattern(regexp = "^[A-Za-z0-9._-]+$", message = "Username may contain only letters, numbers, dots, hyphens, and underscores.")
     private String username;
 
     @NotBlank(message = "Full name is required.")
@@ -27,7 +29,7 @@ public class UserForm {
     @NotNull(message = "Status is required.")
     private Boolean active = true;
 
-    @Size(min = 8, message = "Password must contain at least 8 characters.")
+    @Size(min = 8, max = 72, message = "Password must contain between 8 and 72 characters.")
     private String password;
 
     public Long getId() { return id; }

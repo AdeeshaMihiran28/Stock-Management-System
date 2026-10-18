@@ -15,9 +15,11 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
 import jakarta.validation.constraints.DecimalMin;
+import jakarta.validation.constraints.Digits;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 
 @Entity
@@ -30,6 +32,7 @@ public class Product {
 
     @NotBlank(message = "Product code is required.")
     @Size(max = 50, message = "Product code must not exceed 50 characters.")
+    @Pattern(regexp = "^[A-Za-z0-9._-]+$", message = "Product code may contain only letters, numbers, dots, hyphens, and underscores.")
     @Column(name = "product_code", nullable = false, length = 50)
     private String productCode;
 
@@ -59,6 +62,7 @@ public class Product {
 
     @NotNull(message = "Unit price is required.")
     @DecimalMin(value = "0.0", inclusive = true, message = "Unit price cannot be negative.")
+    @Digits(integer = 10, fraction = 2, message = "Unit price must have no more than 10 whole digits and 2 decimal places.")
     @Column(name = "unit_price", nullable = false, precision = 12, scale = 2)
     private BigDecimal unitPrice;
 

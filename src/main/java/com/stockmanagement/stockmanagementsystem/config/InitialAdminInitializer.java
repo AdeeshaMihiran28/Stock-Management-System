@@ -40,8 +40,8 @@ public class InitialAdminInitializer implements ApplicationRunner {
             LOGGER.warn("No users exist. Set ADMIN_USERNAME and ADMIN_PASSWORD to create the initial administrator.");
             return;
         }
-        if (password.length() < 8) {
-            LOGGER.warn("Initial administrator was not created because ADMIN_PASSWORD is shorter than 8 characters.");
+        if (password.length() < 8 || password.length() > 72) {
+            LOGGER.warn("Initial administrator was not created because ADMIN_PASSWORD must contain between 8 and 72 characters.");
             return;
         }
 

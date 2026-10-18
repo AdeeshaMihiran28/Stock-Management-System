@@ -45,9 +45,7 @@ public class UserService {
     public User createUser(UserForm form) {
         normalize(form);
         validateDuplicates(form, null);
-        if (!StringUtils.hasText(form.getPassword()) || form.getPassword().length() < 8) {
-            throw new IllegalArgumentException("Password must contain at least 8 characters.");
-        }
+        validatePassword(form.getPassword());
 
         User user = new User();
         copyBasicDetails(form, user);
@@ -76,9 +74,7 @@ public class UserService {
 
     @Transactional
     public void resetPassword(Long id, String password) {
-        if (!StringUtils.hasText(password) || password.length() < 8) {
-            throw new IllegalArgumentException("Password must contain at least 8 characters.");
-        }
+        validatePassword(password);
         User user = getUserById(id);
         user.setPassword(passwordEncoder.encode(password));
         userRepository.save(user);
@@ -124,5 +120,11 @@ public class UserService {
         form.setUsername(form.getUsername().trim());
         form.setFullName(form.getFullName().trim());
         form.setEmail(StringUtils.hasText(form.getEmail()) ? form.getEmail().trim() : null);
+    }
+
+    private void validatePassword(String password) {
+        if (!StringUtils.hasText(password) || password.length() < 8 || password.length() > 72) {
+            throw new IllegalArgumentException("Password must contain between 8 and 72 characters.");
+        }
     }
 }

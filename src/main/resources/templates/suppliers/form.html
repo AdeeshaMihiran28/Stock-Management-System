@@ -21,7 +21,8 @@
                     <div class="col-md-6">
                         <label class="form-label" for="supplierCode">Supplier Code</label>
                         <input class="form-control" th:classappend="${#fields.hasErrors('supplierCode')} ? 'is-invalid'"
-                               id="supplierCode" type="text" th:field="*{supplierCode}" maxlength="50" required autofocus>
+                               id="supplierCode" type="text" th:field="*{supplierCode}" maxlength="50"
+                               pattern="[A-Za-z0-9._-]+" title="Use letters, numbers, dots, hyphens, or underscores." required autofocus>
                         <div class="invalid-feedback" th:errors="*{supplierCode}"></div>
                     </div>
                     <div class="col-md-6">
@@ -39,7 +40,8 @@
                     <div class="col-md-6">
                         <label class="form-label" for="phone">Phone</label>
                         <input class="form-control" th:classappend="${#fields.hasErrors('phone')} ? 'is-invalid'"
-                               id="phone" type="text" th:field="*{phone}" maxlength="20" required>
+                               id="phone" type="tel" th:field="*{phone}" minlength="7" maxlength="20"
+                               pattern="\+?[0-9][0-9 ()-]{5,18}[0-9]" title="Enter 7 to 20 characters using digits, spaces, parentheses, or hyphens." required>
                         <div class="invalid-feedback" th:errors="*{phone}"></div>
                     </div>
                     <div class="col-md-6">

@@ -24,7 +24,8 @@
                     <div class="col-md-6">
                         <label class="form-label" for="productCode">Product Code</label>
                         <input class="form-control" th:classappend="${#fields.hasErrors('productCode')} ? 'is-invalid'"
-                               id="productCode" type="text" th:field="*{productCode}" maxlength="50" required autofocus>
+                               id="productCode" type="text" th:field="*{productCode}" maxlength="50"
+                               pattern="[A-Za-z0-9._-]+" title="Use letters, numbers, dots, hyphens, or underscores." required autofocus>
                         <div class="invalid-feedback" th:errors="*{productCode}"></div>
                     </div>
                     <div class="col-md-6">
@@ -75,7 +76,7 @@
                     <div class="col-md-4">
                         <label class="form-label" for="unitPrice">Unit Price</label>
                         <input class="form-control" th:classappend="${#fields.hasErrors('unitPrice')} ? 'is-invalid'"
-                               id="unitPrice" type="number" min="0" step="0.01" th:field="*{unitPrice}" required>
+                               id="unitPrice" type="number" min="0" max="9999999999.99" step="0.01" th:field="*{unitPrice}" required>
                         <div class="invalid-feedback" th:errors="*{unitPrice}"></div>
                     </div>
                 </div>
