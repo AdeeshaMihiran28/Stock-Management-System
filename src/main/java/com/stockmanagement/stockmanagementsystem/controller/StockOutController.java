@@ -56,7 +56,8 @@ public class StockOutController {
             StockTransaction transaction = stockOutService.processStockOut(form);
             redirectAttributes.addFlashAttribute("successMessage",
                     "Stock-Out completed successfully. " + transaction.getQuantity()
-                            + " units were removed from " + transaction.getProduct().getProductCode() + ".");
+                            + " units were removed from " + transaction.getProduct().getProductCode()
+                            + ". Current available quantity: " + transaction.getProduct().getQuantity() + ".");
             return "redirect:/stock-out";
         } catch (ResourceNotFoundException | IllegalArgumentException exception) {
             bindingResult.reject("stockOut", exception.getMessage());

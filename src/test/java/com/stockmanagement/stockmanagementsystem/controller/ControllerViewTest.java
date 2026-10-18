@@ -8,10 +8,13 @@ import static org.springframework.security.test.web.servlet.request.SecurityMock
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.flash;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import org.junit.jupiter.api.Test;
@@ -26,8 +29,10 @@ import org.springframework.security.test.context.support.WithMockUser;
 
 import com.stockmanagement.stockmanagementsystem.config.SecurityConfig;
 import com.stockmanagement.stockmanagementsystem.service.CategoryService;
+import com.stockmanagement.stockmanagementsystem.model.Category;
 import com.stockmanagement.stockmanagementsystem.model.Product;
 import com.stockmanagement.stockmanagementsystem.model.StockTransaction;
+import com.stockmanagement.stockmanagementsystem.model.StockTransactionType;
 import com.stockmanagement.stockmanagementsystem.model.User;
 import com.stockmanagement.stockmanagementsystem.service.ProductService;
 import com.stockmanagement.stockmanagementsystem.service.SupplierService;
@@ -137,7 +142,8 @@ class ControllerViewTest {
 
         mockMvc.perform(get("/stock-in"))
                 .andExpect(status().isOk())
-                .andExpect(view().name("stock-in/list"));
+                .andExpect(view().name("stock-in/list"))
+                .andExpect(content().string(org.hamcrest.Matchers.containsString("Current Available")));
         mockMvc.perform(get("/stock-in/new"))
                 .andExpect(status().isOk())
                 .andExpect(view().name("stock-in/form"));
@@ -178,7 +184,8 @@ class ControllerViewTest {
 
         mockMvc.perform(get("/stock-out"))
                 .andExpect(status().isOk())
-                .andExpect(view().name("stock-out/list"));
+                .andExpect(view().name("stock-out/list"))
+                .andExpect(content().string(org.hamcrest.Matchers.containsString("Current Available")));
         mockMvc.perform(get("/stock-out/new"))
                 .andExpect(status().isOk())
                 .andExpect(view().name("stock-out/form"));
@@ -210,7 +217,7 @@ class ControllerViewTest {
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/stock-out"))
                 .andExpect(flash().attribute("successMessage",
-                        "Stock-Out completed successfully. 8 units were removed from P001."));
+                        "Stock-Out completed successfully. 8 units were removed from P001. Current available quantity: 0."));
     }
 
     @Test
@@ -243,6 +250,51 @@ class ControllerViewTest {
         mockMvc.perform(get("/reports/stock-out")).andExpect(status().isOk()).andExpect(view().name("reports/stock-out"));
         mockMvc.perform(get("/reports/low-stock")).andExpect(status().isOk()).andExpect(view().name("reports/low-stock"));
         mockMvc.perform(get("/reports/movements")).andExpect(status().isOk()).andExpect(view().name("reports/movements"));
+    }
+
+    @Test
+    void downloadsReportsAsCsvAndKeepsDateFilters() throws Exception {
+        Category category = new Category();
+        category.setName("Accessories");
+        Product product = new Product();
+        product.setProductCode("P001");
+        product.setName("Mouse, Pro");
+        product.setCategory(category);
+        product.setQuantity(5);
+        product.setReorderLevel(2);
+        product.setUnitPrice(new BigDecimal("1500.00"));
+        when(reportService.getCurrentStockReport()).thenReturn(List.of(product));
+
+        mockMvc.perform(get("/reports/current-stock/download"))
+                .andExpect(status().isOk())
+                .andExpect(content().contentTypeCompatibleWith("text/csv"))
+                .andExpect(header().string("Content-Disposition",
+                        org.hamcrest.Matchers.containsString("current-stock-report.csv")))
+                .andExpect(content().string(org.hamcrest.Matchers.containsString("\"Mouse, Pro\"")));
+
+        StockTransaction transaction = new StockTransaction();
+        transaction.setProduct(product);
+        transaction.setTransactionType(StockTransactionType.IN);
+        transaction.setQuantity(3);
+        transaction.setTransactionDate(LocalDateTime.of(2026, 10, 10, 9, 30));
+        transaction.setReferenceNumber("=unsafe");
+        when(reportService.getTransactionReport(
+                StockTransactionType.IN, java.time.LocalDate.of(2026, 10, 1),
+                java.time.LocalDate.of(2026, 10, 31))).thenReturn(List.of(transaction));
+
+        mockMvc.perform(get("/reports/stock-in/download")
+                        .param("fromDate", "2026-10-01").param("toDate", "2026-10-31"))
+                .andExpect(status().isOk())
+                .andExpect(header().string("Content-Disposition",
+                        org.hamcrest.Matchers.containsString("stock-in-report.csv")))
+                .andExpect(content().string(org.hamcrest.Matchers.containsString("\"'=unsafe\"")));
+
+        when(reportService.getLowStockReport()).thenReturn(List.of());
+        when(reportService.getTransactionReport(StockTransactionType.OUT, null, null)).thenReturn(List.of());
+        when(reportService.getTransactionReport(null, null, null)).thenReturn(List.of());
+        mockMvc.perform(get("/reports/low-stock/download")).andExpect(status().isOk());
+        mockMvc.perform(get("/reports/stock-out/download")).andExpect(status().isOk());
+        mockMvc.perform(get("/reports/movements/download")).andExpect(status().isOk());
     }
 
     @Test

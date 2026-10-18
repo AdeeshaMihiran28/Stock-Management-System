@@ -62,7 +62,8 @@ public class StockInController {
             StockTransaction transaction = stockInService.processStockIn(form);
             redirectAttributes.addFlashAttribute("successMessage",
                     "Stock-In completed successfully. " + transaction.getQuantity()
-                            + " units were added to " + transaction.getProduct().getProductCode() + ".");
+                            + " units were added to " + transaction.getProduct().getProductCode()
+                            + ". Current available quantity: " + transaction.getProduct().getQuantity() + ".");
             return "redirect:/stock-in";
         } catch (ResourceNotFoundException | IllegalArgumentException exception) {
             bindingResult.reject("stockIn", exception.getMessage());
