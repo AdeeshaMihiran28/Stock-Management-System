@@ -68,6 +68,15 @@ class UserServiceTest {
         verify(userRepository, never()).save(any());
     }
 
+    @Test
+    void rejectsPasswordsLongerThanBcryptSupports() {
+        UserForm form = form("admin", "x".repeat(73));
+
+        assertThrows(IllegalArgumentException.class, () -> userService.createUser(form));
+        verify(passwordEncoder, never()).encode(any());
+        verify(userRepository, never()).save(any());
+    }
+
     private UserForm form(String username, String password) {
         UserForm form = new UserForm();
         form.setUsername(username);

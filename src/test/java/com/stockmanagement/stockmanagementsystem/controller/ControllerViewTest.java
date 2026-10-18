@@ -28,6 +28,7 @@ import com.stockmanagement.stockmanagementsystem.config.SecurityConfig;
 import com.stockmanagement.stockmanagementsystem.service.CategoryService;
 import com.stockmanagement.stockmanagementsystem.model.Product;
 import com.stockmanagement.stockmanagementsystem.model.StockTransaction;
+import com.stockmanagement.stockmanagementsystem.model.User;
 import com.stockmanagement.stockmanagementsystem.service.ProductService;
 import com.stockmanagement.stockmanagementsystem.service.SupplierService;
 import com.stockmanagement.stockmanagementsystem.service.StockInService;
@@ -310,6 +311,13 @@ class ControllerViewTest {
     void adminCanViewUserManagement() throws Exception {
         when(userService.getAllUsers()).thenReturn(List.of());
         mockMvc.perform(get("/users")).andExpect(status().isOk()).andExpect(view().name("users/list"));
+        mockMvc.perform(get("/users/new")).andExpect(status().isOk()).andExpect(view().name("users/form"));
+
+        User user = new User();
+        user.setUsername("test.user");
+        when(userService.getUserById(1L)).thenReturn(user);
+        mockMvc.perform(get("/users/password/1"))
+                .andExpect(status().isOk()).andExpect(view().name("users/password"));
     }
 
     @Test

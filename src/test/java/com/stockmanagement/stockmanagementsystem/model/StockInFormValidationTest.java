@@ -2,6 +2,7 @@ package com.stockmanagement.stockmanagementsystem.model;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.time.LocalDateTime;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -26,5 +27,21 @@ class StockInFormValidationTest {
                 .collect(Collectors.toSet());
 
         assertThat(invalidFields).contains("productId", "supplierId", "quantity", "transactionDate");
+    }
+
+    @Test
+    void rejectsInvalidIdsAndFutureDate() {
+        StockInForm form = new StockInForm();
+        form.setProductId(0L);
+        form.setSupplierId(-1L);
+        form.setQuantity(1);
+        form.setTransactionDate(LocalDateTime.now().plusDays(1));
+
+        Set<String> invalidFields = validator.validate(form).stream()
+                .map(ConstraintViolation::getPropertyPath)
+                .map(Object::toString)
+                .collect(Collectors.toSet());
+
+        assertThat(invalidFields).contains("productId", "supplierId", "transactionDate");
     }
 }

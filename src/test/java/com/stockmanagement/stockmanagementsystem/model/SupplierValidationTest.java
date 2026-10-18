@@ -27,4 +27,19 @@ class SupplierValidationTest {
 
         assertThat(invalidFields).contains("supplierCode", "name", "phone", "email", "status");
     }
+
+    @Test
+    void rejectsInvalidCodeAndPhone() {
+        Supplier supplier = new Supplier();
+        supplier.setSupplierCode("SUP 01!");
+        supplier.setName("Supplier");
+        supplier.setPhone("phone-number");
+
+        Set<String> invalidFields = validator.validate(supplier).stream()
+                .map(ConstraintViolation::getPropertyPath)
+                .map(Object::toString)
+                .collect(Collectors.toSet());
+
+        assertThat(invalidFields).contains("supplierCode", "phone");
+    }
 }

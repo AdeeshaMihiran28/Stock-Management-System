@@ -33,4 +33,21 @@ class ProductValidationTest {
 
         assertThat(invalidFields).contains("quantity", "reorderLevel", "unitPrice", "category");
     }
+
+    @Test
+    void rejectsInvalidCodeAndPricePrecision() {
+        Product product = new Product();
+        product.setProductCode("P 001!");
+        product.setName("Wireless Mouse");
+        product.setQuantity(0);
+        product.setReorderLevel(0);
+        product.setUnitPrice(new BigDecimal("12.345"));
+
+        Set<String> invalidFields = validator.validate(product).stream()
+                .map(ConstraintViolation::getPropertyPath)
+                .map(Object::toString)
+                .collect(Collectors.toSet());
+
+        assertThat(invalidFields).contains("productCode", "unitPrice");
+    }
 }
