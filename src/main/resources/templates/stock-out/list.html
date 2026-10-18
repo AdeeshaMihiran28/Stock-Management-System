@@ -33,7 +33,8 @@
                     <th>Date</th>
                     <th>Product Code</th>
                     <th>Product Name</th>
-                    <th>Quantity</th>
+                    <th>Stocked Out</th>
+                    <th>Current Available</th>
                     <th>Reference Number</th>
                     <th>Notes</th>
                 </tr>
@@ -45,11 +46,12 @@
                     <td class="fw-semibold" th:text="${transaction.product.productCode}"></td>
                     <td th:text="${transaction.product.name}"></td>
                     <td th:text="${transaction.quantity}"></td>
+                    <td class="fw-semibold" th:text="${transaction.product.quantity}"></td>
                     <td th:text="${#strings.isEmpty(transaction.referenceNumber) ? '-' : transaction.referenceNumber}"></td>
                     <td th:text="${#strings.isEmpty(transaction.notes) ? '-' : transaction.notes}"></td>
                 </tr>
                 <tr th:if="${#lists.isEmpty(transactions)}">
-                    <td colspan="7" class="text-center text-secondary py-5">No Stock-Out transactions found.</td>
+                    <td colspan="8" class="text-center text-secondary py-5">No Stock-Out transactions found.</td>
                 </tr>
                 </tbody>
             </table>

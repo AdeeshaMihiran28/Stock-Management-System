@@ -9,7 +9,7 @@
 <body>
 <div th:replace="~{fragments/navigation :: navigation('reports')}"></div>
 <main class="container-fluid page-container py-5">
-    <h1 class="h2 mb-4">Low Stock Report</h1>
+    <div class="d-flex justify-content-between align-items-center mb-4"><h1 class="h2 mb-0">Low Stock Report</h1><a class="btn btn-success" th:href="@{/reports/low-stock/download}">Download CSV</a></div>
     <div class="card border-0 shadow-sm"><div class="table-responsive"><table class="table table-hover align-middle mb-0">
         <thead class="table-light"><tr><th>Product Code</th><th>Product Name</th><th>Category</th><th>Quantity</th><th>Reorder Level</th><th>Status</th></tr></thead>
         <tbody>

@@ -34,7 +34,8 @@
                     <th>Product Code</th>
                     <th>Product Name</th>
                     <th>Supplier</th>
-                    <th>Quantity</th>
+                    <th>Stocked In</th>
+                    <th>Current Available</th>
                     <th>Reference Number</th>
                 </tr>
                 </thead>
@@ -46,10 +47,11 @@
                     <td th:text="${transaction.product.name}"></td>
                     <td th:text="${transaction.supplier.supplierCode + ' - ' + transaction.supplier.name}"></td>
                     <td th:text="${transaction.quantity}"></td>
+                    <td class="fw-semibold" th:text="${transaction.product.quantity}"></td>
                     <td th:text="${#strings.isEmpty(transaction.referenceNumber) ? '-' : transaction.referenceNumber}"></td>
                 </tr>
                 <tr th:if="${#lists.isEmpty(transactions)}">
-                    <td colspan="7" class="text-center text-secondary py-5">No Stock-In transactions found.</td>
+                    <td colspan="8" class="text-center text-secondary py-5">No Stock-In transactions found.</td>
                 </tr>
                 </tbody>
             </table>

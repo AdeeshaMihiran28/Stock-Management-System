@@ -27,7 +27,7 @@
                                 id="productId" th:field="*{productId}" required>
                             <option value="">Select a product</option>
                             <option th:each="product : ${products}" th:value="${product.id}"
-                                    th:text="${product.productCode + ' - ' + product.name}"></option>
+                                    th:text="${product.productCode + ' - ' + product.name + ' (Available: ' + product.quantity + ')'}"></option>
                         </select>
                         <div class="invalid-feedback" th:errors="*{productId}"></div>
                     </div>
